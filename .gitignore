@@ -2,3 +2,4 @@
 *.bin
 *.pcd
 dataset/labels/*.txt
+.DS_Store
