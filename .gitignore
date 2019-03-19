@@ -1,5 +1,6 @@
 .idea/
 *.bin
 *.pcd
+*.npy
 dataset/labels/*.txt
 .DS_Store
