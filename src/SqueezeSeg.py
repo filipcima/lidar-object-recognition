@@ -14,7 +14,7 @@ class SqueezeSeg(object):
         self.batch_size = batch_size
         self.epochs = epochs
         if log_info:
-            tf.logging.set_verbosity(tf.logging.INFO)
+            tf.logging.set_verbosity(tf.logging.FATAL)
 
     def fire_module(self, input_tensor, name, filters):
         """
@@ -35,27 +35,27 @@ class SqueezeSeg(object):
             activation=tf.nn.relu,
             padding='same',
             name=name + '_squeeze'
-        )
+            )
 
         conv_2_1 = tf.layers.conv2d(
-            inputs=conv_1,
-            filters=filters[1],
-            kernel_size=[3, 3],
-            strides=[1, 1],
-            activation=tf.nn.relu,
-            padding='same',
-            name=name + '_expand_1_3x3'
-        )
+                inputs=conv_1,
+                filters=filters[1],
+                kernel_size=[3, 3],
+                strides=[1, 1],
+                activation=tf.nn.relu,
+                padding='same',
+                name=name + '_expand_1_3x3'
+                )
 
         conv_2_2 = tf.layers.conv2d(
-            inputs=conv_1,
-            filters=filters[1],
-            kernel_size=[1, 1],
-            strides=[1, 1],
-            activation=tf.nn.relu,
-            padding='same',
-            name=name + '_expand_2_1x1'
-        )
+                inputs=conv_1,
+                filters=filters[1],
+                kernel_size=[1, 1],
+                strides=[1, 1],
+                activation=tf.nn.relu,
+                padding='same',
+                name=name + '_expand_2_1x1'
+                )
 
         output_tensor = tf.concat([conv_2_1, conv_2_2], -1)
         return output_tensor
@@ -68,43 +68,44 @@ class SqueezeSeg(object):
         :param name: module name
         :return: [N, H, 2*W, C]
         """
-        C = input_tensor.shape[-1]
-
+        C = int(input_tensor.shape[-1])
+        
         conv_1 = tf.layers.conv2d(
-            inputs=input_tensor,
-            filters=C/2,
-            kernel_size=[1, 1],
-            strides=[1, 1],
-            activation=tf.nn.relu,
-            padding='same', name='{}_squeeze'.format(name))
-
+                inputs=input_tensor,
+                filters=C/2,
+                kernel_size=[1, 1],
+                strides=[1, 1],
+                activation=tf.nn.relu,
+                padding='same', name='{}_squeeze'.format(name))
+        
         deconv_x2 = tf.layers.conv2d_transpose(
-            conv_1,
-            filters=C/4,
-            kernel_size=[3, 3],
-            strides=[1, 2],
-            activation=tf.nn.relu,
-            padding='same',
-            name='{}_deconv_2'.format(name))
-
-        conv_2_1 = tf.layers.conv2d(
-            inputs=deconv_x2,
-            filters=C/2,
-            kernel_size=[3, 3],
-            strides=[1, 1],
-            activation=tf.nn.relu,
-            padding='same',
-            name='{}_expand_1_3x3'.format(name)
+                conv_1,
+                filters=C/4,
+                kernel_size=[3, 3],
+                strides=[1, 2],
+                activation=tf.nn.relu,
+                padding='same',
+                name='{}_deconv_2'.format(name)    
         )
 
+        conv_2_1 = tf.layers.conv2d(
+                inputs=deconv_x2,
+                filters=C/2,
+                kernel_size=[3, 3],
+                strides=[1, 1],
+                activation=tf.nn.relu,
+                padding='same',
+                name='{}_expand_1_3x3'.format(name)
+                )
+
         conv_2_2 = tf.layers.conv2d(
-            inputs=deconv_x2,
-            filters=C/2,
-            kernel_size=[1, 1],
-            strides=[1, 1],
-            activation=tf.nn.relu,
-            padding='same',
-            name='{}_expand_2_1x1'.format(name))
+                inputs=deconv_x2,
+                filters=C/2,
+                kernel_size=[1, 1],
+                strides=[1, 1],
+                activation=tf.nn.relu,
+                padding='same',
+                name='{}_expand_2_1x1'.format(name))
 
         output_tensor = tf.concat([conv_2_1, conv_2_2], -1)
         return output_tensor
@@ -124,7 +125,7 @@ class SqueezeSeg(object):
             inputs=input_layer,
             filters=96,
             kernel_size=[3, 7],
-            stride=[1, 2],
+            strides=[1, 2],
             activation=tf.nn.relu,
             padding='same',
             name='conv1'
@@ -176,7 +177,6 @@ class SqueezeSeg(object):
 
         fire_deconv_13 = self.fire_deconv_module(skip_conv_1a_deconv_12, 'fire_deconv_13')
 
-        # TODO: (vincent.cheung.mcer@gmail.com) Not sure about the skip layer of `conv1b` and `deconv13`
         skip_conv_1b_deconv_13 = tf.concat([input_layer, fire_deconv_13], -1)
 
         conv_14 = tf.layers.conv2d(
@@ -236,7 +236,7 @@ def get_data(mode='train'):
 
     for path in data_set_paths:
         if current_count % 100 == 0:
-            print('Processed: {} %'.format(current_count*1.0/data_count*1.0))
+            print('Processed: {} %'.format(current_count*1.0/data_count*100.0))
         input_tensors.append(np.load(path).astype(np.float32))
         current_count += 1
 
@@ -255,10 +255,10 @@ def main():
     squeeze_seg = SqueezeSeg(batch_size=args.batch_size, epochs=args.epochs, log_info=args.verbose)
     classifier = tf.estimator.Estimator(model_fn=squeeze_seg.squeeze_seg_fn, model_dir='./model/')
 
-    whole_train_data = np.array(get_data('train'))
+    whole_train_data = np.array(get_data('train')).astype(np.float32)
     train_data = whole_train_data[:, :, :5]
     train_labels = whole_train_data[:, :, 5]
-    whole_eval_data = np.array(get_data('test'))
+    whole_eval_data = np.array(get_data('test')).astype(np.float32)
     eval_data = whole_eval_data[:, :, :5]
     eval_labels = whole_eval_data[:, :, 5]
 
