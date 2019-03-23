@@ -68,24 +68,24 @@ class SqueezeSeg(object):
         :param name: module name
         :return: [N, H, 2*W, C]
         """
-        C = int(input_tensor.shape[-1])
-        
+        C = input_tensor.shape[-1]
+
         conv_1 = tf.layers.conv2d(
-                inputs=input_tensor,
-                filters=C/2,
-                kernel_size=[1, 1],
-                strides=[1, 1],
-                activation=tf.nn.relu,
-                padding='same', name='{}_squeeze'.format(name))
-        
+            inputs=input_tensor,
+            filters=C/2,
+            kernel_size=[1, 1],
+            strides=[1, 1],
+            activation=tf.nn.relu,
+            padding='same', name='{}_squeeze'.format(name))
+
         deconv_x2 = tf.layers.conv2d_transpose(
-                conv_1,
-                filters=C/4,
-                kernel_size=[3, 3],
-                strides=[1, 2],
-                activation=tf.nn.relu,
-                padding='same',
-                name='{}_deconv_2'.format(name)    
+            conv_1,
+            filters=C/4,
+            kernel_size=[3, 3],
+            strides=[1, 2],
+            activation=tf.nn.relu,
+            padding='same',
+            name='{}_deconv_2'.format(name)
         )
 
         conv_2_1 = tf.layers.conv2d(
@@ -235,8 +235,8 @@ def get_data(mode='train'):
     input_tensors = []
 
     for path in data_set_paths:
-        if current_count % 100 == 0:
-            print('Processed: {} %'.format(current_count*1.0/data_count*100.0))
+        if current_count % 200 == 0:
+            print('Processed: {} %'.format(current_count * 1.0 / data_count * 100.0))
         input_tensors.append(np.load(path).astype(np.float32))
         current_count += 1
 
