@@ -14,7 +14,7 @@ class SqueezeSeg(object):
         self.batch_size = batch_size
         self.epochs = epochs
         if log_info:
-            tf.logging.set_verbosity(tf.logging.FATAL)
+            tf.logging.set_verbosity(tf.logging.INFO)
 
     def fire_module(self, input_tensor, name, filters):
         """
@@ -246,8 +246,8 @@ def get_data(mode='train'):
     for path in data_set_paths:
         if current_count % 200 == 0:
             print('Processed: {} %'.format(current_count * 1.0 / data_count * 100.0))
-        if current_count % 4:
-            input_tensors.append(np.load(path).astype(np.float32))
+        
+        input_tensors.append(np.load(path).astype(np.float32))
         current_count += 1
 
     print('{}ing data loaded.'.format(mode))
@@ -263,25 +263,29 @@ def main():
     args = parser.parse_args()
 
     squeeze_seg = SqueezeSeg(batch_size=args.batch_size, epochs=args.epochs, log_info=args.verbose)
-    # config = tf.ConfigProto(allow_soft_placement=True)
-    # config.gpu_options.allow_growth=True
-    # run_config = tf.estimator.RunConfig(session_config=config)
+    config = tf.ConfigProto(allow_soft_placement=True)
+    config.gpu_options.allow_growth=True
+    run_config = tf.estimator.RunConfig(session_config=config)
     classifier = tf.estimator.Estimator(
         model_fn=squeeze_seg.squeeze_seg_fn,
         model_dir='./model/',
-        # config=run_config
+        config=run_config
     )
 
     whole_train_data = np.array(get_data('train')).astype(np.float32)
     print('whole_train', whole_train_data.shape)
     train_data = whole_train_data[:, :, :, :5]
     train_labels = whole_train_data[:, :, :, 5]
+    
     whole_eval_data = np.array(get_data('test')).astype(np.float32)
     print('whole_eval', whole_eval_data.shape)
     eval_data = whole_eval_data[:, :, :, :5]
     eval_labels = whole_eval_data[:, :, :, 5]
 
-    tensors_to_log = {"probabilities": "softmax_tensor"}
+    tensors_to_log = {
+        "probabilities": "softmax_tensor",
+    }
+
     logging_hook = tf.train.LoggingTensorHook(tensors=tensors_to_log, every_n_iter=10)
 
     print('train labels',train_labels.shape)
@@ -289,15 +293,15 @@ def main():
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": train_data},
         y=train_labels,
-        batch_size=args.batch_size,
-        num_epochs=args.epochs,
+        batch_size=4,
+        num_epochs=32,
         shuffle=True
     )
 
     print('Started training...')
     classifier.train(
         input_fn=train_input_fn,
-        steps=5000,
+        steps=1000,
         hooks=[logging_hook])
 
     print('Training done.')
