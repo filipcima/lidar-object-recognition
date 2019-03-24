@@ -107,7 +107,7 @@ def process_kitti_frame(frame_number, save_example=False):
         r = img[:, :, 2]
         b[img_labels == 1] = 255  # cars are blue
         g[img_labels == 4] = 255  # pedestrians are green,
-        r[img_labels == 6] = 255  # cyclist are red, code is written with glue
+        r[img_labels == 6] = 255  # cyclist are red, I have no clue
 
         # img[:, :, img == k] = v
         # img[:, :, img == k] = v

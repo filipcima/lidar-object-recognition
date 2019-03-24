@@ -8,7 +8,7 @@ from glob import glob
 
 
 class SqueezeSeg(object):
-    def __init__(self, learning_rate=0.001, num_classes=3, batch_size=32, epochs=64, log_info=True):
+    def __init__(self, learning_rate=0.001, num_classes=4, batch_size=32, epochs=64, log_info=True):
         self.num_classes = num_classes
         self.learning_rate = learning_rate
         self.batch_size = batch_size
@@ -192,7 +192,7 @@ class SqueezeSeg(object):
         logits = conv_14
         
         predictions = {
-            'classes': tf.argmax(input=logits, axis=3),
+            'classes': tf.argmax(input=logits, axis=-1),
             'probabilities': tf.nn.softmax(logits, name='softmax_tensor')
         }
 
@@ -227,9 +227,12 @@ class SqueezeSeg(object):
             )
             return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_optimizer)
 
+        indices = tf.squeeze(tf.where(tf.less_equal(labels, self.num_classes - 1)), 1)  # ignore all labels >= num_classes
+        pred = tf.gather(predictions['classes'], indices)
+
         eval_metric_ops = {
             'mean_iou': tf.metrics.mean_iou(
-                labels=labels, predictions=predictions['classes'],
+                labels=labels, predictions=pred,
                 num_classes=self.num_classes, name='iou_metric')
         }
         return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
@@ -299,6 +302,7 @@ def main():
     )
 
     print('Started training...')
+
     classifier.train(
         input_fn=train_input_fn,
         steps=1000,
