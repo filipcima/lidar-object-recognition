@@ -8,7 +8,7 @@ from glob import glob
 
 
 class SqueezeSeg(object):
-    def __init__(self, learning_rate=0.001, num_classes=4, batch_size=32, epochs=64, log_info=True):
+    def __init__(self, learning_rate=0.001, num_classes=3, batch_size=32, epochs=64, log_info=True):
         self.num_classes = num_classes
         self.learning_rate = learning_rate
         self.batch_size = batch_size
@@ -227,12 +227,11 @@ class SqueezeSeg(object):
             )
             return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_optimizer)
 
-        indices = tf.squeeze(tf.where(tf.less_equal(labels, self.num_classes - 1)), 1)  # ignore all labels >= num_classes
-        pred = tf.gather(predictions['classes'], indices)
+        print('Prediction classes:', predictions['classes'])
 
         eval_metric_ops = {
             'mean_iou': tf.metrics.mean_iou(
-                labels=labels, predictions=pred,
+                labels=labels, predictions=predictions['classes'],
                 num_classes=self.num_classes, name='iou_metric')
         }
         return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
@@ -247,7 +246,7 @@ def get_data(mode='train'):
     input_tensors = []
 
     for path in data_set_paths:
-        if current_count % 200 == 0:
+        if current_count % 100 == 0:
             print('Processed: {} %'.format(current_count * 1.0 / data_count * 100.0))
         
         input_tensors.append(np.load(path).astype(np.float32))
