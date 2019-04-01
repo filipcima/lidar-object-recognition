@@ -235,7 +235,7 @@ class SqueezeSeg(object):
         eval_metric_ops = {
             'mean_iou': tf.metrics.mean_iou(
                 labels=labels, predictions=predictions['classes'],
-                num_classes=self.num_classes, name='iou_metric')
+                num_classes=self.num_classes+1, name='iou_metric')
         }
         return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
@@ -251,7 +251,8 @@ def get_data(mode='train'):
     for path in data_set_paths:
         if current_count % 100 == 0:
             print('Processed: {} %'.format(current_count * 1.0 / data_count * 100.0))
-            input_tensors.append(np.load(path).astype(np.float32))
+
+        input_tensors.append(np.load(path).astype(np.float32))
         current_count += 1
 
     print('{}ing data loaded.'.format(mode))
@@ -268,7 +269,7 @@ def main():
 
     squeeze_seg = SqueezeSeg(batch_size=args.batch_size, epochs=args.epochs, log_info=args.verbose)
     config = tf.ConfigProto(allow_soft_placement=True)
-    config.gpu_options.allow_growth=True
+    config.gpu_options.allow_growth = True
     run_config = tf.estimator.RunConfig(session_config=config)
     classifier = tf.estimator.Estimator(
         model_fn=squeeze_seg.squeeze_seg_fn,
@@ -292,7 +293,7 @@ def main():
 
     logging_hook = tf.train.LoggingTensorHook(tensors=tensors_to_log, every_n_iter=10)
 
-    print('train labels',train_labels.shape)
+    print('train labels', train_labels.shape)
 
     train_input_fn = tf.estimator.inputs.numpy_input_fn(
         x={"x": train_data},
@@ -303,32 +304,23 @@ def main():
     )
 
     print('Started training...')
-
-    #train_results = classifier.train(
+    # classifier.train(
     #    input_fn=train_input_fn,
     #    steps=5,
     #    hooks=[logging_hook]
-    #)
-
-    #print(train_results)
-
+    # )
     print('Training done.')
 
-    print('len all:', len(eval_labels))
-    
-    trololo = []
-    for label in eval_labels:
-        trololo.append(label[label > 3])
-
-    print('len troololo:', len(trololo))
-
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": train_data},
-        y=train_labels,
+        x={"x": eval_data},
+        y=eval_labels,
         num_epochs=1,
         shuffle=False
     )
+
+    print('Started eval...')
     eval_results = classifier.evaluate(input_fn=eval_input_fn)
+    print('Eval done.')
 
     print(eval_results)
 
