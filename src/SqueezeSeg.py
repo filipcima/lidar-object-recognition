@@ -199,8 +199,11 @@ class SqueezeSeg(object):
         if mode == tf.estimator.ModeKeys.PREDICT:
             return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
         
-        print(labels)
-
+        print('Labels:\n')
+        
+        print('1:', labels)
+        print('2:', labels[0, :, :])
+        
         one_hot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=self.num_classes)
         weights = tf.constant([0.5, 0.3, 0.2])
         class_weights = tf.multiply(one_hot_labels, weights)
@@ -248,8 +251,7 @@ def get_data(mode='train'):
     for path in data_set_paths:
         if current_count % 100 == 0:
             print('Processed: {} %'.format(current_count * 1.0 / data_count * 100.0))
-        
-        input_tensors.append(np.load(path).astype(np.float32))
+            input_tensors.append(np.load(path).astype(np.float32))
         current_count += 1
 
     print('{}ing data loaded.'.format(mode))
@@ -302,16 +304,27 @@ def main():
 
     print('Started training...')
 
-    classifier.train(
-        input_fn=train_input_fn,
-        steps=1000,
-        hooks=[logging_hook])
+    #train_results = classifier.train(
+    #    input_fn=train_input_fn,
+    #    steps=5,
+    #    hooks=[logging_hook]
+    #)
+
+    #print(train_results)
 
     print('Training done.')
 
+    print('len all:', len(eval_labels))
+    
+    trololo = []
+    for label in eval_labels:
+        trololo.append(label[label > 3])
+
+    print('len troololo:', len(trololo))
+
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": eval_data},
-        y=eval_labels,
+        x={"x": train_data},
+        y=train_labels,
         num_epochs=1,
         shuffle=False
     )
