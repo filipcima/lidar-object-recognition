@@ -121,6 +121,8 @@ class SqueezeSeg(object):
 
         input_layer = tf.reshape(features['x'], [-1, 64, 512, 5])
 
+        tf.summary.image('input', tf.cast(tf.reshape(input_layer[:, :, :, 0], shape=(-1, 64, 512, 1)), tf.uint8))
+
         conv_1 = tf.layers.conv2d(
             inputs=input_layer,
             filters=96,
@@ -191,11 +193,18 @@ class SqueezeSeg(object):
         
         logits = conv_14
         
+        tf.summary.image('logits', tf.reshape(logits[:, :, :, 0], shape=(-1, 64, 512, 1)))
+        
         predictions = {
             'classes': tf.argmax(input=logits, axis=-1),
             'probabilities': tf.nn.softmax(logits, name='softmax_tensor')
         }
 
+        predictions_classes = tf.reshape(predictions['classes'], shape=(-1, 64, 512, 1))
+        
+        tf.summary.image('predictions', tf.cast(predictions_classes, tf.float32))
+        tf.summary.image('labels', tf.cast(tf.reshape(labels, shape=(-1, 64, 512, 1)), tf.float32))
+        
         if mode == tf.estimator.ModeKeys.PREDICT:
             return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
         
@@ -304,11 +313,11 @@ def main():
     )
 
     print('Started training...')
-    # classifier.train(
-    #    input_fn=train_input_fn,
-    #    steps=5,
-    #    hooks=[logging_hook]
-    # )
+    classifier.train(
+        input_fn=train_input_fn,
+        steps=2000,
+        hooks=[logging_hook]
+    )
     print('Training done.')
 
     eval_input_fn = tf.estimator.inputs.numpy_input_fn(
