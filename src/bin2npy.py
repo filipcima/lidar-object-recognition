@@ -51,7 +51,7 @@ def process_kitti_frame(frame_number, save_example=False):
     x, y, z, intensity = np_points[:, 0], np_points[:, 1], np_points[:, 2], np_points[:, 3]
     velo_points = np_points[:, :3]
 
-    con = in_range(x, y, z, [-45, 45])
+    con = in_range(x, y, [-45, 45])
 
     # calib img points to labels coords from 3rd party lib
     calib = Calib(f'{CALIB_PATH}/{frame_number}.txt')
@@ -73,22 +73,22 @@ def process_kitti_frame(frame_number, save_example=False):
         # INTENSITY
         img = cv2.normalize(train_depth_map[:, :, 0], None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
         # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
-        cv2.imwrite(f'intensity-{frame_number}.png', img)
+        cv2.imwrite(f'x-{frame_number}.png', img)
 
         # X
         img = cv2.normalize(train_depth_map[:, :, 1], None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
         # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
-        cv2.imwrite(f'x-{frame_number}.png', img)
+        cv2.imwrite(f'y-{frame_number}.png', img)
 
         # Y
         img = cv2.normalize(train_depth_map[:, :, 2], None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
         # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
-        cv2.imwrite(f'y-{frame_number}.png', img)
+        cv2.imwrite(f'z-{frame_number}.png', img)
 
         # Z
         img = cv2.normalize(train_depth_map[:, :, 3], None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
         # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
-        cv2.imwrite(f'z-{frame_number}.png', img)
+        cv2.imwrite(f'intensity-{frame_number}.png', img)
 
         # DISTANCE
         img = cv2.normalize(train_depth_map[:, :, 4], None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
@@ -124,7 +124,7 @@ def process_kitti_frame(frame_number, save_example=False):
     print(f'Saved: {VELO_PATH}/npy/{frame_number}.npy')
 
 
-def in_range(x, y, z, fov):
+def in_range(x, y, fov):
     return np.logical_and(np.arctan2(y, x) > (-fov[1] * np.pi / 180),
                           np.arctan2(y, x) < (-fov[0] * np.pi / 180))
 
@@ -141,11 +141,12 @@ def within_3d_box(points, box3d):
 
 
 class Box3d:
-    def __init__(self, p1=0, p2=0, p4=0, p5=0):
+    def __init__(self, label='', p1=0, p2=0, p4=0, p5=0):
         """
         Init 3D bounding box with 4 points
         """
         self.init = True
+        self.label = label
         self.u = p1 - p2
         self.v = p1 - p4
         self.w = p1 - p5
@@ -157,7 +158,7 @@ class Box3d:
         """
         ref: https://github.com/NVIDIA/DIGITS/issues/992
         """
-        self.label = str_list[0]
+        label = str_list[0]
         h, w, l = np.array(str_list[8:11]).astype(float)
         x, y, z = np.array(str_list[11:14]).astype(float)
         rot = np.array(str_list[14]).astype(float)
@@ -182,7 +183,7 @@ class Box3d:
         p2 = rot_p[:, 1]
         p4 = rot_p[:, 3]
         p5 = rot_p[:, 4]
-        self.__init__(p1, p2, p4, p5)
+        self.__init__(label, p1, p2, p4, p5)
 
     def get_box(self):
         """

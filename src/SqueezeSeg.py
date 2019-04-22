@@ -141,8 +141,8 @@ class SqueezeSeg(object):
             name='max_pool_1'
         )
 
-        fire_2 = self.fire_module(max_pool_1, 'fire_2',[16, 64])
-        fire_3 = self.fire_module(fire_2, 'fire_3',[16, 64])
+        fire_2 = self.fire_module(max_pool_1, 'fire_2', [16, 64])
+        fire_3 = self.fire_module(fire_2, 'fire_3', [16, 64])
 
         max_pool_3 = tf.layers.max_pooling2d(
             inputs=fire_3,
@@ -160,7 +160,7 @@ class SqueezeSeg(object):
             pool_size=[1, 2],
             strides=[1, 2],
             padding='same',
-            name='maxpool5'
+            name='max_pool_5'
         )
 
         fire_6 = self.fire_module(max_pool_5, 'fire_6', [48, 192])
@@ -178,17 +178,16 @@ class SqueezeSeg(object):
         skip_conv_1a_deconv_12 = tf.concat([conv_1, fire_deconv_12], -1)
 
         fire_deconv_13 = self.fire_deconv_module(skip_conv_1a_deconv_12, 'fire_deconv_13')
-
         skip_conv_1b_deconv_13 = tf.concat([input_layer, fire_deconv_13], -1)
-       
-        print(skip_conv_1b_deconv_13)
 
         conv_14 = tf.layers.conv2d(
             inputs=skip_conv_1b_deconv_13,
             filters=self.num_classes,
             kernel_size=[1, 1],
             strides=[1, 1],
-            activation=tf.nn.relu, padding='same', name='conv_14'
+            activation=tf.nn.relu,
+            padding='same',
+            name='conv_14'
         )
         
         logits = conv_14
@@ -207,12 +206,7 @@ class SqueezeSeg(object):
         
         if mode == tf.estimator.ModeKeys.PREDICT:
             return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
-        
-        print('Labels:\n')
-        
-        print('1:', labels)
-        print('2:', labels[0, :, :])
-        
+
         one_hot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=self.num_classes)
         weights = tf.constant([0.5, 0.3, 0.2])
         class_weights = tf.multiply(one_hot_labels, weights)
