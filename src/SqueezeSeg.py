@@ -202,8 +202,10 @@ class SqueezeSeg(object):
         predictions_classes = tf.reshape(predictions['classes'], shape=(-1, 64, 512, 1))
         
         tf.summary.image('predictions', tf.cast(predictions_classes, tf.float32))
-        tf.summary.image('labels', tf.cast(tf.reshape(labels, shape=(-1, 64, 512, 1)), tf.float32))
-        
+        try:
+            tf.summary.image('labels', tf.cast(tf.reshape(labels, shape=(-1, 64, 512, 1)), tf.float32))
+        except ValueError:
+            print('error')
         if mode == tf.estimator.ModeKeys.PREDICT:
             return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
