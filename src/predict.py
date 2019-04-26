@@ -1,18 +1,21 @@
+import argparse
 import tensorflow as tf
-import numpy as np
 import os
-import cv2
 
-from SqueezeSeg import SqueezeSeg
-from classifier import export_image
+from train import SqueezeSeg
+from utils import export_image
+from utils import get_item
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('frame_number', default=os.getcwd())
+    parser.add_argument('-m', '--mode', help='train|test', default='train')
+    args = parser.parse_args()
+    item_no = args.frame_number
     squeeze_seg = SqueezeSeg()
-    item_no = '004083'
-    #item_no = '007362'
-    #item_no = '000000'
-    image, labels = get_item(item_no)
+
+    image, labels = get_item(item_no, mode=args.mode)
     export_image('intensity-{}-pred.png'.format(item_no), image[:, :, 0])
     export_image('gt-{}-pred.png'.format(item_no), labels)
 
@@ -36,16 +39,10 @@ def main():
         cl[cl == 2] = 10e6
         cl[cl == 3] = 15e6
         cl[cl == 0] = 0
-        export_image('cl-{}-{}.png'.format(item_no, idx), cl)
+        export_image('predict-{}-{}-pred.png'.format(item_no, idx), cl)
         idx += 1
 
     print(predictions)
-
-
-def get_item(filename='000000.npy', mode='test'):
-    path = os.path.join('..', 'dataset', 'lidar_2d', mode, '{}.npy'.format(filename))
-    item = np.load(path).astype(np.float32)
-    return item[:, :, :5], item[:, :, 5]
 
 
 if __name__ == '__main__':
