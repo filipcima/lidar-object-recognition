@@ -37,3 +37,7 @@ def calculate_iou(label, pred, num_classes=4, epsilon=1e-12):
         fns[cls_id] = fn
 
     return {KITTI_LIST[i]: iou for i, iou in enumerate(ious) if tps[i] > 0 or fps[i] > 0 or fns[i] > 0}
+
+
+def mean(numbers):
+    return float(sum(numbers)) / max(len(numbers), 1)
