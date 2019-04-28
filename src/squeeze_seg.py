@@ -2,7 +2,7 @@ import tensorflow as tf
 
 
 class SqueezeSeg(object):
-    def __init__(self, learning_rate=0.001, num_classes=3, batch_size=32, epochs=64, log_info=True):
+    def __init__(self, learning_rate=0.001, num_classes=4, batch_size=4, epochs=64, log_info=True):
         self.num_classes = num_classes
         self.learning_rate = learning_rate
         self.batch_size = batch_size
@@ -202,7 +202,7 @@ class SqueezeSeg(object):
             return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
         one_hot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=self.num_classes)
-        weights = tf.constant([0.5, 0.3, 0.2])
+        weights = tf.constant([0.8, 0.5, 0.3, 0.2])
         class_weights = tf.multiply(one_hot_labels, weights)
 
         print('One hot labels:' ,one_hot_labels)
@@ -232,6 +232,6 @@ class SqueezeSeg(object):
         eval_metric_ops = {
             'mean_iou': tf.metrics.mean_iou(
                 labels=labels, predictions=predictions['classes'],
-                num_classes=self.num_classes + 1, name='iou_metric')
+                num_classes=self.num_classes, name='iou_metric')
         }
         return tf.estimator.EstimatorSpec(mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)

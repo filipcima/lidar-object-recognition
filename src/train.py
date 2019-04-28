@@ -30,7 +30,7 @@ def get_data(mode='train'):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--batch-size', help='batch size', type=int, default=32)
+    parser.add_argument('-b', '--batch-size', help='batch size', type=int, default=4)
     parser.add_argument('-e', '--epochs', help='epochs count', type=int, default=64)
     parser.add_argument('-m', '--mode', help='train|eval', default='train')
     parser.add_argument('--verbose', help='make tensorflow verbose', action='store_true')
@@ -46,7 +46,7 @@ def main():
         config=run_config
     )
 
-    whole_data = np.array(get_data(args.mode)).astype(np.float32)
+    whole_data = np.array(get_data(args.mode if args.mode == 'train' else 'test')).astype(np.float32)
     data = whole_data[:, :, :, :5]
     labels = whole_data[:, :, :, 5]
 
@@ -78,7 +78,8 @@ def main():
             x={"x": data},
             y=labels,
             num_epochs=1,
-            shuffle=False
+            shuffle=False,
+            batch_size=args.batch_size
         )
 
         print('Started eval...')

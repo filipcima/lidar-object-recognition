@@ -12319,7 +12319,7 @@ node {
   }
 }
 node {
-  name: "maxpool5/MaxPool"
+  name: "max_pool_5/MaxPool"
   op: "MaxPool"
   input: "concat_3"
   attr {
@@ -13046,7 +13046,7 @@ node {
 node {
   name: "fire_6_squeeze/Conv2D"
   op: "Conv2D"
-  input: "maxpool5/MaxPool"
+  input: "max_pool_5/MaxPool"
   input: "fire_6_squeeze/kernel/read"
   attr {
     key: "T"
@@ -39147,7 +39147,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\001\000\000\000\001\000\000\000\345\003\000\000\003\000\000\000"
+        tensor_content: "\001\000\000\000\001\000\000\000\345\003\000\000\004\000\000\000"
       }
     }
   }
@@ -39185,7 +39185,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: -0.0774596706033
+        float_val: -0.0774209648371
       }
     }
   }
@@ -39223,7 +39223,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: 0.0774596706033
+        float_val: 0.0774209648371
       }
     }
   }
@@ -39261,7 +39261,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39349,7 +39349,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39390,7 +39390,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39423,7 +39423,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39455,7 +39455,7 @@ node {
           size: 997
         }
         dim {
-          size: 3
+          size: 4
         }
       }
     }
@@ -39501,7 +39501,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39553,7 +39553,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39577,7 +39577,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39596,7 +39596,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 3
+            size: 4
           }
         }
         float_val: 0.0
@@ -39621,7 +39621,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39644,7 +39644,7 @@ node {
     value {
       shape {
         dim {
-          size: 3
+          size: 4
         }
       }
     }
@@ -39681,7 +39681,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39724,7 +39724,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39793,7 +39793,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39866,7 +39866,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -39904,7 +39904,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -40333,7 +40333,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -40683,179 +40683,6 @@ node {
   }
 }
 node {
-  name: "strided_slice_2/stack"
-  op: "Const"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-          dim {
-            size: 3
-          }
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT32
-        tensor_shape {
-          dim {
-            size: 3
-          }
-        }
-        tensor_content: "\000\000\000\000\000\000\000\000\000\000\000\000"
-      }
-    }
-  }
-}
-node {
-  name: "strided_slice_2/stack_1"
-  op: "Const"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-          dim {
-            size: 3
-          }
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT32
-        tensor_shape {
-          dim {
-            size: 3
-          }
-        }
-        tensor_content: "\001\000\000\000\000\000\000\000\000\000\000\000"
-      }
-    }
-  }
-}
-node {
-  name: "strided_slice_2/stack_2"
-  op: "Const"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-          dim {
-            size: 3
-          }
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT32
-        tensor_shape {
-          dim {
-            size: 3
-          }
-        }
-        tensor_content: "\001\000\000\000\001\000\000\000\001\000\000\000"
-      }
-    }
-  }
-}
-node {
-  name: "strided_slice_2"
-  op: "StridedSlice"
-  input: "random_shuffle_queue_DequeueUpTo:2"
-  input: "strided_slice_2/stack"
-  input: "strided_slice_2/stack_1"
-  input: "strided_slice_2/stack_2"
-  attr {
-    key: "Index"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-          dim {
-            size: 64
-          }
-          dim {
-            size: 512
-          }
-        }
-      }
-    }
-  }
-  attr {
-    key: "begin_mask"
-    value {
-      i: 6
-    }
-  }
-  attr {
-    key: "ellipsis_mask"
-    value {
-      i: 0
-    }
-  }
-  attr {
-    key: "end_mask"
-    value {
-      i: 6
-    }
-  }
-  attr {
-    key: "new_axis_mask"
-    value {
-      i: 0
-    }
-  }
-  attr {
-    key: "shrink_axis_mask"
-    value {
-      i: 1
-    }
-  }
-}
-node {
   name: "Cast_2"
   op: "Cast"
   input: "random_shuffle_queue_DequeueUpTo:2"
@@ -40981,7 +40808,7 @@ node {
         dtype: DT_INT32
         tensor_shape {
         }
-        int_val: 3
+        int_val: 4
       }
     }
   }
@@ -41020,7 +40847,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -41042,7 +40869,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -41061,10 +40888,10 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 3
+            size: 4
           }
         }
-        tensor_content: "\000\000\000?\232\231\231>\315\314L>"
+        tensor_content: "\315\314L?\000\000\000?\232\231\231>\315\314L>"
       }
     }
   }
@@ -41095,7 +40922,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -41127,7 +40954,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -43038,7 +42865,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -43340,7 +43167,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -43677,7 +43504,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -43801,7 +43628,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -43874,7 +43701,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -43907,7 +43734,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -44015,7 +43842,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45500,7 +45327,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45533,7 +45360,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45556,7 +45383,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45609,7 +45436,7 @@ node {
             size: 512
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45641,7 +45468,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45790,7 +45617,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -45918,7 +45745,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -61535,7 +61362,7 @@ node {
 node {
   name: "gradients/fire_6_squeeze/Conv2D_grad/ShapeN"
   op: "ShapeN"
-  input: "maxpool5/MaxPool"
+  input: "max_pool_5/MaxPool"
   input: "fire_6_squeeze/kernel/read"
   attr {
     key: "N"
@@ -61650,7 +61477,7 @@ node {
 node {
   name: "gradients/fire_6_squeeze/Conv2D_grad/Conv2DBackpropFilter"
   op: "Conv2DBackpropFilter"
-  input: "maxpool5/MaxPool"
+  input: "max_pool_5/MaxPool"
   input: "gradients/fire_6_squeeze/Conv2D_grad/ShapeN:1"
   input: "gradients/fire_6_squeeze/BiasAdd_grad/tuple/control_dependency"
   attr {
@@ -61810,10 +61637,10 @@ node {
   }
 }
 node {
-  name: "gradients/maxpool5/MaxPool_grad/MaxPoolGrad"
+  name: "gradients/max_pool_5/MaxPool_grad/MaxPoolGrad"
   op: "MaxPoolGrad"
   input: "concat_3"
-  input: "maxpool5/MaxPool"
+  input: "max_pool_5/MaxPool"
   input: "gradients/fire_6_squeeze/Conv2D_grad/tuple/control_dependency"
   attr {
     key: "T"
@@ -62031,7 +61858,7 @@ node {
 node {
   name: "gradients/concat_3_grad/Slice"
   op: "Slice"
-  input: "gradients/maxpool5/MaxPool_grad/MaxPoolGrad"
+  input: "gradients/max_pool_5/MaxPool_grad/MaxPoolGrad"
   input: "gradients/concat_3_grad/ConcatOffset"
   input: "gradients/concat_3_grad/ShapeN"
   attr {
@@ -62071,7 +61898,7 @@ node {
 node {
   name: "gradients/concat_3_grad/Slice_1"
   op: "Slice"
-  input: "gradients/maxpool5/MaxPool_grad/MaxPoolGrad"
+  input: "gradients/max_pool_5/MaxPool_grad/MaxPoolGrad"
   input: "gradients/concat_3_grad/ConcatOffset:1"
   input: "gradients/concat_3_grad/ShapeN:1"
   attr {
@@ -107363,7 +107190,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\001\000\000\000\001\000\000\000\345\003\000\000\003\000\000\000"
+        tensor_content: "\001\000\000\000\001\000\000\000\345\003\000\000\004\000\000\000"
       }
     }
   }
@@ -107440,7 +107267,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107479,7 +107306,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107511,7 +107338,7 @@ node {
           size: 997
         }
         dim {
-          size: 3
+          size: 4
         }
       }
     }
@@ -107557,7 +107384,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107609,7 +107436,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107655,7 +107482,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\001\000\000\000\001\000\000\000\345\003\000\000\003\000\000\000"
+        tensor_content: "\001\000\000\000\001\000\000\000\345\003\000\000\004\000\000\000"
       }
     }
   }
@@ -107732,7 +107559,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107771,7 +107598,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107803,7 +107630,7 @@ node {
           size: 997
         }
         dim {
-          size: 3
+          size: 4
         }
       }
     }
@@ -107849,7 +107676,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107901,7 +107728,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107925,7 +107752,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107944,7 +107771,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 3
+            size: 4
           }
         }
         float_val: 0.0
@@ -107969,7 +107796,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -107992,7 +107819,7 @@ node {
     value {
       shape {
         dim {
-          size: 3
+          size: 4
         }
       }
     }
@@ -108029,7 +107856,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -108072,7 +107899,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -108096,7 +107923,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -108115,7 +107942,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
           dim {
-            size: 3
+            size: 4
           }
         }
         float_val: 0.0
@@ -108140,7 +107967,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -108163,7 +107990,7 @@ node {
     value {
       shape {
         dim {
-          size: 3
+          size: 4
         }
       }
     }
@@ -108200,7 +108027,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -108243,7 +108070,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -113045,7 +112872,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -113097,7 +112924,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -131811,7 +131638,7 @@ node {
         dtype: DT_STRING
         tensor_shape {
         }
-        string_val: "_temp_778f6eb43b9d4ab0879ba314d9d28331/part"
+        string_val: "_temp_54353cf13f3f4fd483da68b10a4c6dd4/part"
       }
     }
   }
@@ -135153,7 +134980,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -135197,7 +135024,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -135241,7 +135068,7 @@ node {
       list {
         shape {
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -135294,7 +135121,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -135347,7 +135174,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
@@ -135400,7 +135227,7 @@ node {
             size: 997
           }
           dim {
-            size: 3
+            size: 4
           }
         }
       }
