@@ -8,6 +8,7 @@ from glob import glob
 
 from squeeze_seg import SqueezeSeg
 
+
 def get_data(mode='train'):
     print('Retrieving {}ing data...'.format(mode))
     data_set_paths = glob(os.path.join('..', 'dataset', 'lidar_2d', mode, '*.npy'))

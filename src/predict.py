@@ -5,12 +5,13 @@ import os
 from train import SqueezeSeg
 from utils import export_image
 from utils import get_item
+from utils import calculate_iou
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser()
     parser.add_argument('frame_number', default=os.getcwd())
-    parser.add_argument('-m', '--mode', help='train|test', default='train')
+    parser.add_argument('-m', '--mode', help='train|test', default='test')
     args = parser.parse_args()
     item_no = args.frame_number
     squeeze_seg = SqueezeSeg()
@@ -32,17 +33,20 @@ def main():
 
     predictions = classifier.predict(input_fn=eval_input_fn)
 
-    idx = 0
-    for p in predictions:
-        cl = p['classes']
-        cl[cl == 1] = 5e6
-        cl[cl == 2] = 10e6
-        cl[cl == 3] = 15e6
-        cl[cl == 0] = 0
-        export_image('predict-{}-{}-pred.png'.format(item_no, idx), cl)
-        idx += 1
+    # print('Prediction len: {}'.format(len(predictions)))
+    print('Labels shape: {}'.format(labels.shape))
+    # print('Predictions shape: {}'.format(next(predictions)['classes'].shape))
 
-    print(predictions)
+    pred = next(predictions)['classes']
+    ious = calculate_iou(labels, pred, 4)
+
+    print('IoUs: {}'.format(ious))
+
+    pred[pred == 1] = 5e6
+    pred[pred == 2] = 10e6
+    pred[pred == 3] = 15e6
+    pred[pred == 0] = 0
+    export_image('predict-{}-pred.png'.format(item_no), pred)
 
 
 if __name__ == '__main__':
