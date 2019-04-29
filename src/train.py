@@ -68,7 +68,7 @@ def main():
         print('Started training...')
         classifier.train(
             input_fn=train_input_fn,
-            steps=2000,
+            steps=4000,
             hooks=[logging_hook]
         )
         print('Training done.')
