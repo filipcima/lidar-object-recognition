@@ -8,6 +8,8 @@ from train import SqueezeSeg
 from utils import get_item
 from utils import calculate_iou
 from utils import mean
+from utils import export_image
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -35,10 +37,11 @@ def main():
     )
     idx = 0
     for item_no in file_names:
-        if idx % 20 == 0:
+        if idx % 50 == 0:
+            print('{}/{}'.format(idx/50, len(file_names)/50))
             image, labels = get_item(item_no, mode=args.mode)
-            # export_image('intensity-{}-pred.png'.format(item_no), image[:, :, 0])
-            # export_image('gt-{}-pred.png'.format(item_no), labels)
+            #export_image('intensity-{}-pred.png'.format(item_no), image[:, :, 0])
+            #export_image('gt-{}-pred.png'.format(item_no), labels)
 
             eval_input_fn = tf.estimator.inputs.numpy_input_fn(
                 x={"x": image},
@@ -58,13 +61,19 @@ def main():
 
             for cls, iou in ious.iteritems():
                 all_ious[cls].append(iou)
+            
         idx += 1
 
     all_means = {cls: mean(iou) for cls, iou in all_ious.iteritems()}
     all_means['unknown'] = None
 
     print(all_means)
-
+    
+    pred[pred == 1] = 5e6
+    pred[pred == 2] = 10e6
+    pred[pred == 3] = 15e6
+    pred[pred == 0] = 0
+    #export_image('predict-{}-pred.png'.format(item_no), pred)
 
 if __name__ == '__main__':
     main()
