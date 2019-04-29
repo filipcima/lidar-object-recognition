@@ -48,7 +48,7 @@ def process_kitti_frame(frame_number, save_example=False):
 
     con = in_range(x, y, [-45, 45])
 
-    # calib img points to labels coords from 3rd party lib
+    # img points to labels coords from calib
     calib = Calib(f'{CALIB_PATH}/{frame_number}.txt')
     calibrated_img_points = calib.velo2cams(velo_points[con])
     img_points = np_points[:, :3][con]
@@ -185,13 +185,11 @@ class Box3d:
         Returns bounding box
         """
         if self.init is None:
-            print('Error using get_box without init.')
             return None
         return self.u, self.v, self.w, self.b_u, self.b_v, self.b_w
 
     def get_label(self):
         if self.label is None:
-            print('Error using get_label without init.')
             return KITTI_LABELS['DontCare']
 
         return KITTI_LABELS[self.label]
