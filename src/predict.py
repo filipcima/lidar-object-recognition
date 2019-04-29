@@ -24,7 +24,24 @@ def main():
     for path in data_set_paths:
         file_names.append(os.path.splitext(path)[0].split('/')[-1])
 
-    mean_iou, mean_precision, mean_recall = {}, {}, {}
+    mean_iou = {
+        'unknown': [],
+        'car': [],
+        'pedestrian': [],
+        'cyclist': []
+    }
+    mean_precision = {
+        'unknown': [],
+        'car': [],
+        'pedestrian': [],
+        'cyclist': []
+    }
+    mean_recall = {
+        'unknown': [],
+        'car': [],
+        'pedestrian': [],
+        'cyclist': []
+    }
 
     classifier = tf.estimator.Estimator(
         model_fn=squeeze_seg.squeeze_seg_fn,
@@ -32,8 +49,8 @@ def main():
     )
     idx = 0
     for item_no in file_names:
-        if idx % 50 == 0:
-            print('{}/{}'.format(idx/50, len(file_names)/50))
+        if idx % 100 == 0:
+            print('{}/{}'.format(idx/100, len(file_names)/100))
             image, labels = get_item(item_no, mode=args.mode)
             #export_image('intensity-{}-pred.png'.format(item_no), image[:, :, 0])
             #export_image('gt-{}-pred.png'.format(item_no), labels)
@@ -49,9 +66,11 @@ def main():
             after = time()
 
             pred = next(predictions)['classes']
-            ious, precisions, recalls = calculate_iou(labels, pred, 4)
+            ious, precisions, recalls = calculate_metrics(labels, pred, 4)
 
-            print(ious)
+            print('IOUS: {}'.format(ious))
+            print('PRECISIONS: {}'.format(precisions))
+            print('RECALL: {}'.format(recalls))
             print('Time elapsed: {}'.format((after - before) * 1000))
 
             for cls, iou in ious.iteritems():
@@ -73,10 +92,10 @@ def main():
     print('PRECISION:', mean_precision)
     print('RECALL:', mean_recall)
 
-    pred[pred == 1] = 5e6
-    pred[pred == 2] = 10e6
-    pred[pred == 3] = 15e6
-    pred[pred == 0] = 0
+    # pred[pred == 1] = 5e6
+    # pred[pred == 2] = 10e6
+    # pred[pred == 3] = 15e6
+    # pred[pred == 0] = 0
     #export_image('predict-{}-pred.png'.format(item_no), pred)
 
 
