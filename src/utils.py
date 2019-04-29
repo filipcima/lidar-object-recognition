@@ -22,6 +22,8 @@ def export_image(name, image):
 
 def calculate_iou(label, pred, num_classes=4, epsilon=1e-12):
     ious = np.zeros(num_classes)
+    precisions = np.zeros(num_classes)
+    recalls = np.zeros(num_classes)
     tps = np.zeros(num_classes)
     fns = np.zeros(num_classes)
     fps = np.zeros(num_classes)
@@ -32,11 +34,17 @@ def calculate_iou(label, pred, num_classes=4, epsilon=1e-12):
         fn = np.sum(pred[label == cls_id] != cls_id)
 
         ious[cls_id] = tp / (tp + fn + fp + epsilon)
+        precisions[cls_id] = tp / (tp + fn + epsilon)
+        recalls[cls_id] = tp / (tp + fn + epsilon)
         tps[cls_id] = tp
         fps[cls_id] = fp
         fns[cls_id] = fn
 
-    return {KITTI_LIST[i]: iou for i, iou in enumerate(ious) if tps[i] > 0 or fps[i] > 0 or fns[i] > 0}
+    ious = {KITTI_LIST[i]: _iou for i, _iou in enumerate(ious) if tps[i] > 0 or fps[i] > 0 or fns[i] > 0}
+    precisions = {KITTI_LIST[i]: _precision for i, _precision in enumerate(precisions) if tps[i] > 0 or fns[i] > 0}
+    recalls = {KITTI_LIST[i]: _recall for i, _recall in enumerate(recalls) if tps[i] > 0 or fns[i] > 0}
+
+    return ious, precisions, recalls
 
 
 def mean(numbers):

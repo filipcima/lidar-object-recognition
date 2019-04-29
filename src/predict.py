@@ -9,6 +9,7 @@ from utils import get_item
 from utils import calculate_iou
 from utils import mean
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('frame_number', default=os.getcwd())
@@ -22,12 +23,7 @@ def main():
     for path in data_set_paths:
         file_names.append(os.path.splitext(path)[0].split('/')[-1])
 
-    all_ious = {
-        'unknown': [],
-        'car': [],
-        'pedestrian': [],
-        'cyclist': []
-    }
+    mean_iou, mean_precision, mean_recall = {}, {}, {}
 
     classifier = tf.estimator.Estimator(
         model_fn=squeeze_seg.squeeze_seg_fn,
@@ -51,19 +47,29 @@ def main():
             after = time()
 
             pred = next(predictions)['classes']
-            ious = calculate_iou(labels, pred, 4)
+            ious, precisions, recalls = calculate_iou(labels, pred, 4)
 
             print(ious)
             print('Time elapsed: {}'.format((after - before) * 1000))
 
             for cls, iou in ious.iteritems():
-                all_ious[cls].append(iou)
+                mean_iou[cls].append(iou)
+
+            for cls, precision in precisions.iteritems():
+                mean_precision[cls].append(precision)
+
+            for cls, recall in recalls.iteritems():
+                mean_recall[cls].append(recall)
+
         idx += 1
 
-    all_means = {cls: mean(iou) for cls, iou in all_ious.iteritems()}
-    all_means['unknown'] = None
+    mean_iou = {cls: mean(iou) for cls, iou in mean_iou.iteritems()}
+    mean_precision = {cls: mean(precision) for cls, precision in mean_precision.iteritems()}
+    mean_recall = {cls: mean(recall) for cls, recall in mean_recall.iteritems()}
 
-    print(all_means)
+    print('IoU:', mean_iou)
+    print('PRECISION:', mean_precision)
+    print('RECALL:', mean_recall)
 
 
 if __name__ == '__main__':
